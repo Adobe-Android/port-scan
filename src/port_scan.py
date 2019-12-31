@@ -19,16 +19,21 @@ def main():
     print("##############################################")
 
     if menu_opt1 == "1":
-        single_port(target, menu_opt2)
+        end_position = int(menu_opt2) + 1
+        test_ports(target, menu_opt2, end_position)
     elif menu_opt1 == "2":
-        pass
+        text = menu_opt2.split(',')
+        start_position = int(text[0].strip())
+        end_position = int(text[-1].strip()) + 1
+        test_ports(target, start_position, end_position)
     elif menu_opt1 == "3":
         pass
     else:
         print("Well...that was unexpected.")
 
-def single_port(target, port):
-    for portNumber in range(int(port), int(port) + 1):
+def test_ports(target, port, end_position):
+    
+    for portNumber in range(int(port), end_position):
         print("Scanning port", portNumber, 'on IP address', target)
         if scanner(target, portNumber):
             print('  [*] Port', portNumber, '/tcp','is open')
