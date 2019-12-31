@@ -4,6 +4,14 @@ import socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 def main():
+    # Allows for graceful program exit when using Ctrl-C
+    try:
+        while True:
+            menu()
+    except KeyboardInterrupt:
+        pass
+
+def menu():
     print("##############################################")
     print("| Welcome to the Simple Python Port Scanner. |")
     print("|                Version 0.1                 |")
