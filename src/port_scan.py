@@ -87,6 +87,7 @@ def scanner(target, port):
     try:
         # Properly creates a new socket for each test connection
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(1)
         sock.connect((target, port))
         sock.shutdown(socket.SHUT_RDWR)
         sock.close()
