@@ -5,6 +5,8 @@ import os
 import time
 import sys
 
+from __version__ import __version__
+
 # Useful option for showing connection exceptions
 debug_mode = False
 
@@ -13,7 +15,7 @@ def main():
     try:
         menu()
         while True:
-            continue_program = input("  [+] Would you like to continue? (Y/N): ").lower()
+            continue_program = input(" [+] Would you like to continue? (Y/N): ").lower()
             if continue_program == 'y' or continue_program == 'yes':
                 clear()
                 menu()                
@@ -30,58 +32,71 @@ def clear():
   
     # For POSIX systems (Linux, macOS, FreeBSD, OpenBSD, NetBSD, and more) 
     else: 
-        _ = os.system('clear') 
+        _ = os.system('clear')
 
 def menu():
-    print("##############################################")
-    print("| Welcome to the Simple Python Port Scanner. |")
-    print("|                Version 0.1                 |")
-    print("##############################################")
-    target = input(" [+] Enter Target IP: ")
-    print("##############################################")
-    print("| Choose one of the following options below. |")
-    print("| (1.) Scan a single port                    |")
-    print("| (2.) Scan a port range                     |")
-    print("| (3.) Scan a list of ports                  |")
-    print("##############################################")
-    menu_opt1 = input("  Your choice: ")
-    menu_opt2 = input("  What port(s) would you like to scan? ")
-    print("##############################################")
-    clear()
+    start_menu_string = f"""##############################################
+|     Welcome to pscan version: {__version__}.       |
+|      The simple python port scanner.       |
+##############################################"""
+
+    main_menu_string = """##############################################
+| Choose one of the following options below. |
+| (1.) Scan a single port                    |
+| (2.) Scan a port range                     |
+| (3.) Scan a list of ports                  |
+##############################################"""
+
+    print(start_menu_string)
+    target = input(" [+] Enter Target IP (IPv4): ")
+    # TODO: Validate IPv4 IP
+    print(main_menu_string)
+    menu_opt1 = input("  Option: ")
 
     if menu_opt1 == "1":
+        menu_opt2 = get_ports()
         end_position = int(menu_opt2) + 1
         test_ports_by_range(target, menu_opt2, end_position)
     elif menu_opt1 == "2":
+        menu_opt2 = get_ports()
         tmp_str = menu_opt2.split(',')
         start_position = int(tmp_str[0].strip())
         end_position = int(tmp_str[-1].strip()) + 1
         test_ports_by_range(target, start_position, end_position)
     elif menu_opt1 == "3":
+        menu_opt2 = get_ports()
         port_list = menu_opt2.split(',')
         trimmed_port_list = list(map(str.strip, port_list))
         test_specific_ports(target, trimmed_port_list)
     else:
-        print("Well...that was unexpected.")
-        print("Please choose from one of the options above.")
+        clear()
+        print(" Please choose a valid menu option.")
+
+def get_ports():
+    print("##############################################")
+    print("  What port(s) would you like to scan? ")
+    menu_opt2 = input("  ")
+    print("##############################################")
+    clear()
+    return menu_opt2
 
 def test_specific_ports(target, port_list):
     
     for portNumber in port_list:
-        print("Scanning port", portNumber, 'on IP address', target)
+        print("Scanning port:", portNumber, 'on IP address:', target)
         if scanner(target, int(portNumber)):
-            print('  [*] Port', portNumber, '/tcp','is open')
+            print(' [*] Port', portNumber, '/tcp','is open')
         else:
-            print('  [*] Port', portNumber, '/tcp','is closed')
+            print(' [*] Port', portNumber, '/tcp','is closed')
 
 def test_ports_by_range(target, start_position, end_position):
     
     for portNumber in range(int(start_position), end_position):
         print("Scanning port", portNumber, 'on IP address', target)
         if scanner(target, portNumber):
-            print('  [*] Port', portNumber, '/tcp','is open')
+            print(' [*] Port', portNumber, '/tcp','is open')
         else:
-            print('  [*] Port', portNumber, '/tcp','is closed')
+            print(' [*] Port', portNumber, '/tcp','is closed')
 
 def scanner(target, port):
     try:
